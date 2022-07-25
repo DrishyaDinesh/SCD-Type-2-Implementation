@@ -1,0 +1,24 @@
+//Upload file to stage using SnowSQL
+
+create stage my_stage;
+
+put file://C:/Users/ddinesh6/Downloads/SCD_test.py @my_stage auto_compress = false overwrite = true;
+
+list @my_stage;
+
+//Create Stored Procedure to run the python script Improves_SCD_test_1
+
+CREATE OR REPLACE PROCEDURE ext_SCD(from_table STRING,trg_table STRING, to_table STRING, hist_col STRING, key STRING,
+colnames ARRAY,trsfrm_rule STRING, trsfrm_res_col STRING)
+RETURNS STRING
+LANGUAGE PYTHON
+RUNTIME_VERSION = '3.8'
+PACKAGES = ('snowflake-snowpark-python')
+IMPORTS = ('@my_stage/Improved_SCD_test_1.py')
+HANDLER = 'Improved_SCD_test_1.main';
+
+CALL ext_SCD('customer','customer_trg','cust_final_trg','email','cust_id',['name','age','gender','email'],
+'concat(concat(col("trg_name"),lit("#")),col("trg_cust_id"))', 'CONCAT_RESULT');
+
+
+
