@@ -1,0 +1,12 @@
+// Creating a task to schedule the SCD process
+
+CREATE OR REPLACE TASK SCD1_task
+  WAREHOUSE = DEMO_WH
+  SCHEDULE = 'USING CRON 38 12 * * * Asia/Calcutta'
+AS
+call SCD_Implementation();
+
+ALTER TASK SCD1_task RESUME;
+
+SHOW TASKS;
+
