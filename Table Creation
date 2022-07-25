@@ -1,0 +1,28 @@
+create or replace table customer(cust_id int,name varchar(20),age int, gender varchar(2),email varchar(20));
+
+insert into customer values(110,'Raj',30,'M','raj@gmail.com') , (111,'Rani',50,'F','rani@gmail.com'), 
+(112,'Shanti',22,'F','shanti@gmail.com'), (113,'Shyam',35,'M','shyam@gmail.com'), (114,'Adhik',39,'M','adhik@gmail.com');
+
+select * from customer;
+
+create or replace table customer_trg(trg_cust_id int,trg_name varchar(20),trg_age int, trg_gender varchar(2),trg_email varchar(20),
+is_active int,start_date date,end_date date);
+
+insert into customer_trg values(111,'Rani',50,'F','raniraj@gmail.com',1,'2001-03-03','9999-12-31') , (112,'Shanti',22,'F','shaz@gmail.com',0,'2012-05-07','2019-03-04'),
+(112,'Shanti',22,'F','shanti@gmail.com',1,'2012-03-05','9999-12-31'), (114,'Adhik',39,'M','adi@gmail.com',1,'2020-08-15','9999-12-31');
+
+select * from customer_trg;
+
+create table employee(emp_id int,name varchar(20), dept varchar(20));
+
+insert into employee values (101,'Sharon','Sales'), (102,'Athi','IT'), (103,'Aditya','HR'), (104,'Madhu','IT'),  (105,'Dhruv','Sales');
+
+select * from employee;
+
+create table employee_trg(trg_emp_id int,trg_name varchar(20), trg_dept varchar(20), is_active boolean, start_date date,end_date date);
+
+insert into employee_trg values (101,'Sharon','HR',0,'2022-01-06','2022-03-10'), (101,'Sharon','Sales',1,'2022-03-11','9999-12-31'), 
+(102,'Athi','Sales',1,'2022-02-05','9999-12-31'), (104,'Madhu','HR',1,'2022-01-06','9999-12-31'), (106,'Rajesh','Sales',1,'2022-02-05','9999-12-31');
+
+select * from employee_trg;
+
