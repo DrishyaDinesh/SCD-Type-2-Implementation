@@ -1,0 +1,40 @@
+//This file consists of only the snowflake commands required to create a snowpipe by connecting it to an Azure Blob Storage
+
+CREATE OR REPLACE STORAGE INTEGRATION azure_int
+  TYPE = EXTERNAL_STAGE
+  STORAGE_PROVIDER = AZURE
+  ENABLED = TRUE
+  AZURE_TENANT_ID = 'e91b48d7-f878-4aa1-b36c-ae2890efbd6f'
+  STORAGE_ALLOWED_LOCATIONS = ('azure://sample15.blob.core.windows.net/stage-data');
+  
+  desc storage integration azure_int
+ 
+  CREATE NOTIFICATION INTEGRATION notification_int
+  ENABLED = true
+  TYPE = QUEUE
+  NOTIFICATION_PROVIDER = AZURE_STORAGE_QUEUE
+  AZURE_STORAGE_QUEUE_PRIMARY_URI = 'https://gpv2queue.queue.core.windows.net/queue15'
+  AZURE_TENANT_ID = 'e91b48d7-f878-4aa1-b36c-ae2890efbd6f';
+  
+  desc notification integration notification_int;
+ 
+  create or replace stage azure_stage
+  url = 'azure://sample15.blob.core.windows.net/stage-data'
+  storage_integration = azure_int;
+  list @azure_stage;
+   
+create or replace table customer(cust_id int,name varchar(20),age int, gender varchar(2),email varchar(20));
+SELECT * FROM customer;  
+
+  create or replace pipe DQ_DB.public.my_snowpipe
+  auto_ingest = true
+  integration = 'NOTIFICATION_INT'
+  as
+  copy into DQ_DB.public.CUSTOMER
+  from @DQ_DB.public.azure_stage
+  file_format = 'CSV';
+  
+  alter pipe my_snowpipe refresh;
+ 
+
+show pipes;
