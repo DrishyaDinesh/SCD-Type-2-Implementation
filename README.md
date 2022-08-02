@@ -1,4 +1,4 @@
-# SCD-Type-2-Implementation-in-Snowflake
+# Transformation-Engine-in-Snowflake
 
 This Project aims to build SCD Type 2 functionality using Snowflake and Snowpark(Python)
 
