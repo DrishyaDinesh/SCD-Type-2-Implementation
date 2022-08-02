@@ -1,12 +1,13 @@
 //Creating Input Table which stores details of all the tables for which SCD is to be executed
 
-create or replace table input_table(from_table STRING, trg_table STRING, to_table STRING, hist_col STRING, key STRING, colnames ARRAY); 
+create or replace table input_table(src_table STRING, lkp_table STRING, tgt_table STRING, chng_col STRING, key STRING, colnames ARRAY, trsfrm_rule STRING, trsfrm_res_col STRING, load_type STRING); 
 
-insert into input_table select 'employee','employee_trg','employee_final_trg','dept','emp_id',array_construct('name','dept');
+insert into input_table select 'employee','employee_lkp','employee_final_tgt','dept','emp_id',array_construct('name','dept'),’ col("tgt_emp_id")+lit(200)’, ‘UPDATED_EMP_ID’,’ SCDTYPE2’;
 
-insert into input_table select 'customer','customer_trg','cust_final_trg','email','cust_id',array_construct('name','age','gender','email');
+insert into input_table select 'customer','customer_trg','cust_final_trg','email','cust_id',array_construct('name','age','gender','email'), ’ concat(concat(col("tgt_name"),lit("#")),col("tgt_cust_id"))’, ’ CONCAT_RESULT’, ‘Scdtype2’;
 
 select * from input_table;
+
 
 //Create a Stored Procedure to extract values from the input table and call ext_SCD procedure for all the tables
 
@@ -17,10 +18,11 @@ as
 $$
   declare
     c1 cursor for select * from input_table;
-    frtable STRING;
+    srtable STRING;
+    lptable STRING;
     trtable STRING;
-    totable STRING;
-    hiscol STRING;
+    ldtype STRING;
+    chcol STRING;
     key STRING;
     colnames ARRAY;
     trs_rule STRING;
@@ -28,19 +30,19 @@ $$
   begin
     open c1;
     for record in c1 do
-      frtable := record.from_table;
-      trtable :=record.trg_table;
-      totable := record.to_table;
-      hiscol := record.hist_col;
+      srtable := record.src_table;
+      lptable :=record.lkp_table;
+      trtable := record.tgt_table;
+      ldtype := record.load_type;
+      chcol := record.chng_col;
       key := record.key;
       colnames := record.colnames;
       trs_rule := record.trsfrm_rule;
       trs_col := record.trsfrm_res_col;
-      call ext_SCD(:frtable,:trtable,:totable,:hiscol,:key,:colnames,:trs_rule,:trs_col);
+      call ext_SCD(:srtable,:lptable,:trtable,:ldtype,:chcol,:key,:colnames,:trs_rule,:trs_col);
     end for;
-    return 'SCD Type 2 Implemented successfully for all the tables in input_table';
+    return 'Transformations Implemented successfully for all the tables in input_table';
   end;
 $$
 ;
-
 call SCD_Implementation();
