@@ -1,28 +1,32 @@
+CUSTOMER
 create or replace table customer(cust_id int,name varchar(20),age int, gender varchar(2),email varchar(20));
-
-insert into customer values(110,'Raj',30,'M','raj@gmail.com') , (111,'Rani',50,'F','rani@gmail.com'), 
-(112,'Shanti',22,'F','shanti@gmail.com'), (113,'Shyam',35,'M','shyam@gmail.com'), (114,'Adhik',39,'M','adhik@gmail.com');
-
+insert into customer values(110,'Raj',30,'M','raj@gmail.com') , (111,'Rani',50,'F','rani@gmail.com'), (112,'Shanti',22,'F','shanti@gmail.com'), (113,'Shyam',35,'M','shyam@gmail.com'), (114,'Adhik',39,'M','adhik@gmail.com');
 select * from customer;
 
-create or replace table customer_trg(trg_cust_id int,trg_name varchar(20),trg_age int, trg_gender varchar(2),trg_email varchar(20),
-is_active int,start_date date,end_date date);
+CUSTOMER_LKP
+create or replace table customer_lkp(tgt_cust_id int,tgt_name varchar(20),tgt_age int, tgt_gender varchar(2),tgt_email varchar(20),is_active int,start_date date,end_date date);
+insert into customer_lkp values(111,'Rani',50,'F','raniraj@gmail.com',1,'2001-03-03','9999-12-31') , (112,'Shanti',22,'F','shaz@gmail.com',0,'2012-05-07','2019-03-04'), (112,'Shanti',22,'F','shanti@gmail.com',1,'2012-03-05','9999-12-31'), (114,'Adhik',39,'M','adi@gmail.com',1,'2020-08-15','9999-12-31');
+select * from customer_lkp;
 
-insert into customer_trg values(111,'Rani',50,'F','raniraj@gmail.com',1,'2001-03-03','9999-12-31') , (112,'Shanti',22,'F','shaz@gmail.com',0,'2012-05-07','2019-03-04'),
-(112,'Shanti',22,'F','shanti@gmail.com',1,'2012-03-05','9999-12-31'), (114,'Adhik',39,'M','adi@gmail.com',1,'2020-08-15','9999-12-31');
-
-select * from customer_trg;
-
+EMPLOYEE
 create table employee(emp_id int,name varchar(20), dept varchar(20));
-
 insert into employee values (101,'Sharon','Sales'), (102,'Athi','IT'), (103,'Aditya','HR'), (104,'Madhu','IT'),  (105,'Dhruv','Sales');
-
 select * from employee;
 
-create table employee_trg(trg_emp_id int,trg_name varchar(20), trg_dept varchar(20), is_active boolean, start_date date,end_date date);
+EMPLOYEE_LKP
+create table employee_lkp(tgt_emp_id int,tgt_name varchar(20), tgt_dept varchar(20), is_active boolean, start_date date,end_date date);
+insert into employee_lkp values (101,'Sharon','HR',0,'2022-01-06','2022-03-10'), (101,'Sharon','Sales',1,'2022-03-11','9999-12-31'), (102,'Athi','Sales',1,'2022-02-05','9999-12-31'), (104,'Madhu','HR',1,'2022-01-06','9999-12-31'), (106,'Rajesh','Sales',1,'2022-02-05','9999-12-31');
+select * from employee_lkp;
 
-insert into employee_trg values (101,'Sharon','HR',0,'2022-01-06','2022-03-10'), (101,'Sharon','Sales',1,'2022-03-11','9999-12-31'), 
-(102,'Athi','Sales',1,'2022-02-05','9999-12-31'), (104,'Madhu','HR',1,'2022-01-06','9999-12-31'), (106,'Rajesh','Sales',1,'2022-02-05','9999-12-31');
+EMP_SCD1
+create table Emp_scd1(emp_id int,name varchar(20), dept varchar(20));
+insert into Emp_scd1 (501,'Priya','Sales'), (502,'Anshika','Dev'), (504,'Reshma','IT'), (505,'Hema','FINANCE');
+select * from Emp_scd1;
 
-select * from employee_trg;
+EMP_SC1_LKP
+create table Emp_scd1_lkp(tgt_emp_id int, tgt_name varchar(20), tgt_dept varchar(20));
+insert into Emp_scd1_lkp (501,'Priya','HR'), (503,'Sam','IT'), (504,'Reshma','Sales');
+select * from Emp_scd1_lkp;
 
+SnowSQL Command to upload file
+put file://C:/Users/ddinesh6/Downloads/SCD_test.py @my_stage auto_compress = false overwrite = true;
